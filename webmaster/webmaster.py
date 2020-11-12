@@ -1,4 +1,4 @@
-from data import utils
+import utils
 from googlesearch import search
 from random import randint
 import time
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 		MOZ_ACCESS_ID, MOZ_SECRET_KEY, HUNTER_API_KEY = credentials['MOZ_ACCESS_ID'], credentials['MOZ_SECRET_KEY'], credentials['HUNTER_API_KEY']
 	except:
 		MOZ_ACCESS_ID = input("Please enter your Moz API Access ID: ")
-		MOZ_SECRET_KEY = input("Please enter your Moz API Access ID: ")
+		MOZ_SECRET_KEY = input("Please enter your Moz API secret key: ")
 		HUNTER_API_KEY = input("Please enter your Hunter API key: ")
 	
 	keywords = utils.parseFile("keywords.txt")
