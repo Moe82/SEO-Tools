@@ -29,11 +29,13 @@ def searchFile(filename, term):
 	:param term: term to search for
 	:return: true is term is found in file, otherwise false 
 	"""
-	filepath = root + filename
-	file = open(filepath)
-	return term in file.read().splitlines()
-	file.close()
-
+	try:
+		filepath = root + filename
+		file = open(filepath)
+		return term in file.read().splitlines()
+		file.close()
+	except FileNotFoundError:
+		open(filepath,"w+").close()
 
 def appendStringToFile(filename, string):
 	"""appends a string to the end of the .txt file on a new line 
