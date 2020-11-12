@@ -11,16 +11,18 @@ import urllib
 MAX_DA = 70
 
 class ContactInformation:
-	def __init__(self, firstName, lastName, email, organization, domain, domainAuthority):
+	def __init__(self, firstName, lastName, email, organization, domain, confidanceScore, domainAuthority, type="Personal"):
 		self.firstName = firstName
 		self.lastName = lastName
 		self.email = email
 		self.organization = organization
 		self.domain = domain 
 		self.domainAuthority = domainAuthority
+		self.confidanceScore = confidanceScore;
+		self.type = type;
 	
 	def getContactDict(self):
-		return {"First Name": self.firstName,"Last Name": self.lastName,"email": self.email,"organization": self.organization,"domain": self.domain,"Domain Authority": self.domainAuthority}
+		return {"Cofidance score": self.confidanceScore,"First Name": self.firstName,"Last Name": self.lastName,"email": self.email, "email type": self.type,"organization": self.organization,"domain": self.domain, "Domain Authority": self.domainAuthority}
 
 
 def getContactInformation(domain, HUNTER_API_KEY, domainAuthority):
@@ -28,25 +30,23 @@ def getContactInformation(domain, HUNTER_API_KEY, domainAuthority):
 	uClient = urllib.request.urlopen("https://api.hunter.io/v2/domain-search?domain="+domain+"&api_key=" + HUNTER_API_KEY)
 	json = loads(uClient.read())	
 	uClient.close()
-	counter = 0
 	for email in json.get('data').get('emails'):
-		contact = ContactInformation(email.get('first_name'), email.get('last_name'),email.get('value'), json.get('data').get('organization'), json.get('data').get('domain'), domainAuthority)
+		contact = ContactInformation(email.get('first_name'), email.get('last_name'),email.get('value'), json.get('data').get('organization'), json.get('data').get('domain'), email.get('confidence'), domainAuthority, email.get('type'))
 		if email.get('type') == 'personal':
-			if counter < 1:
-				utils.appendDictToFile("personal_contact_information.csv", contact.getContactDict())
-				print("Contact added to personal_contact_information.csv")
-				counter +=1
+			if email.get('last_name') != None:
+				utils.appendDictToFile("personal_contact.csv", contact.getContactDict())
+				print(email.get('first_name') + " " + email.get('last_name') + " added to personal_contact.csv")
 			else:
-				utils.appendDictToFile("personal_contact_information_extra.csv", contact.getContactDict())
-				print("Contact added to personal_contact_information_extra.csv")
+				utils.appendDictToFile("personal_contact_extra.csv", contact.getContactDict())
+				print("Contact added to personal_contact_extra.csv")
 		elif email.get('type') != 'personal':
-			utils.appendDictToFile("nonpersonal_contact_information.csv", contact.getContactDict())
-			print("Contact added to nonpersonal_contact_information.csv")
+			utils.appendDictToFile("nonpersonal_contact.csv", contact.getContactDict())
+			print("Contact added to nonpersonal_contact.csv")
 
 def getDomainAuthority(domain, accessID, secretKey):	
 	try:
 		print("Connecting to Moz API...")
-		time.sleep(10)
+		time.sleep(5)
 		expires = int(time.time() + 100)
 		stringToSign = accessID+"\n"+str(expires)
 		binarySignature = base64.b64encode(hmac.new(secretKey.encode(), stringToSign.encode(), hashlib.sha1).digest())
@@ -83,24 +83,24 @@ def urlsToDomains(urls):
 	return domains
 
 def google(keyword):	  
-	print("Getting Google search results for: " + keyword + "\n")
-	return list(search(keyword, tld='com', num=100, stop=100, pause=2))
+	print("\nGetting Google search results for keyword: " + keyword)
+	return list(search(keyword, tld='com', num=200, stop=200, pause=2))
 
 if __name__ == "__main__":
 	try:
 		credentials = utils.parseFile("credentials.csv")
 		MOZ_ACCESS_ID, MOZ_SECRET_KEY, HUNTER_API_KEY = credentials['MOZ_ACCESS_ID'], credentials['MOZ_SECRET_KEY'], credentials['HUNTER_API_KEY']
 	except:
-		MOZ_ACCESS_ID = input("Please enter your Moz API Access ID")
-		MOZ_SECRET_KEY = input("Please enter your Moz API Access ID")
-		HUNTER_API_KEY = input("Please enter your Hunter API key")
+		MOZ_ACCESS_ID = input("Please enter your Moz API Access ID: ")
+		MOZ_SECRET_KEY = input("Please enter your Moz API Access ID: ")
+		HUNTER_API_KEY = input("Please enter your Hunter API key: ")
 	
 	keywords = utils.parseFile("keywords.txt")
 	for keyword in keywords:
 		domains = urlsToDomains(google(keyword))
 		for domain in domains:
 			if utils.searchFile("history.txt", domain) == False:
-				print("Domain: " + domain)
+				print("\nDomain: " + domain)
 				domainAuthority = int(getDomainAuthority(domain, MOZ_ACCESS_ID, MOZ_SECRET_KEY))
 				print("domainAuthority: " + str(domainAuthority))
 				if domainAuthority < MAX_DA:
