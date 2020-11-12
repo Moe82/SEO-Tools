@@ -1,4 +1,4 @@
-import utils
+import data_utils as utils
 from googlesearch import search
 from random import randint
 import time
@@ -26,7 +26,7 @@ class ContactInformation:
 
 
 def getContactInformation(domain, HUNTER_API_KEY, domainAuthority):
-	print("Looking for contact information..")
+	print("Calling Hunter API to get contact information..")
 	uClient = urllib.request.urlopen("https://api.hunter.io/v2/domain-search?domain="+domain+"&api_key=" + HUNTER_API_KEY)
 	json = loads(uClient.read())	
 	uClient.close()
@@ -45,8 +45,7 @@ def getContactInformation(domain, HUNTER_API_KEY, domainAuthority):
 
 def getDomainAuthority(domain, accessID, secretKey):	
 	try:
-		print("Connecting to Moz API...")
-		time.sleep(5)
+		print("Calling Moz API to get DA score..")
 		expires = int(time.time() + 100)
 		stringToSign = accessID+"\n"+str(expires)
 		binarySignature = base64.b64encode(hmac.new(secretKey.encode(), stringToSign.encode(), hashlib.sha1).digest())
@@ -99,6 +98,7 @@ if __name__ == "__main__":
 	for keyword in keywords:
 		domains = urlsToDomains(google(keyword))
 		for domain in domains:
+			time.sleep(randint(5,10))
 			if utils.searchFile("history.txt", domain) == False:
 				print("\nDomain: " + domain)
 				domainAuthority = int(getDomainAuthority(domain, MOZ_ACCESS_ID, MOZ_SECRET_KEY))
