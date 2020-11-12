@@ -40,3 +40,9 @@ As the script runs, 3 CSV files will appear in the data directory and will be up
 * history.txt - Contains the domain address for sites that have already been scrapped. This file essentially allows you to terminate the script at any point and resume where you left off when you run it again. 
 
 By default, sites with a domain authority score greater than 70 are ignored as such sites generally aren't good targets for backlink accusation. This value can be changed in line 11 of webmaster.py.
+
+### Common HTTP response errors
+
+* HTTP Error 429 - Too many calls to API. Either upgrade free trial account or make a new one.
+* HTTP error 401 - Incorrect api credentials. Check that you have entered them in correctly and try again. 
+
