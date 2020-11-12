@@ -1,0 +1,4 @@
+** DELETE CONTENTS OF THIS FILE AND POPULATE WITH KEYWORDS **
+Keyword1
+Keyword2
+A keyword can be a sentence. 
