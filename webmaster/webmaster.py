@@ -46,6 +46,7 @@ def getContactInformation(domain, HUNTER_API_KEY, domainAuthority):
 def getDomainAuthority(domain, accessID, secretKey):	
 	try:
 		print("Calling Moz API to get DA score..")
+		time.sleep(randint(5,10))
 		expires = int(time.time() + 100)
 		stringToSign = accessID+"\n"+str(expires)
 		binarySignature = base64.b64encode(hmac.new(secretKey.encode(), stringToSign.encode(), hashlib.sha1).digest())
@@ -65,8 +66,9 @@ def getDomainAuthority(domain, accessID, secretKey):
 		elif len(domainAuthority_string) == 11:
 			domainAuthority = domainAuthority_string[8]
 		return (domainAuthority)
-	except urllib.error.HTTPError as e:
-		raise SystemExit(e)
+	except:
+		print("Issue accessing Moz API")
+		return -1
 
 def urlToDomain(url):
 		if (url[8:11] == 'www'):
@@ -83,7 +85,7 @@ def urlsToDomains(urls):
 
 def google(keyword):	  
 	print("\nGetting Google search results for keyword: " + keyword)
-	return list(search(keyword, tld='com', num=200, stop=200, pause=2))
+	return list(search(keyword, tld='com', num=100, stop=100, pause=2))
 
 if __name__ == "__main__":
 	try:
@@ -98,7 +100,6 @@ if __name__ == "__main__":
 	for keyword in keywords:
 		domains = urlsToDomains(google(keyword))
 		for domain in domains:
-			time.sleep(randint(5,10))
 			if utils.searchFile("history.txt", domain) == False:
 				print("\nDomain: " + domain)
 				domainAuthority = int(getDomainAuthority(domain, MOZ_ACCESS_ID, MOZ_SECRET_KEY))
