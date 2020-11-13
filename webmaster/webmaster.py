@@ -46,7 +46,7 @@ def getContactInformation(domain, HUNTER_API_KEY, domainAuthority):
 def getDomainAuthority(domain, accessID, secretKey):	
 	try:
 		print("Calling Moz API to get DA score..")
-		time.sleep(randint(5,10))
+		time.sleep(10)
 		expires = int(time.time() + 100)
 		stringToSign = accessID+"\n"+str(expires)
 		binarySignature = base64.b64encode(hmac.new(secretKey.encode(), stringToSign.encode(), hashlib.sha1).digest())
