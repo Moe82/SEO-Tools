@@ -26,13 +26,13 @@ The output (a .csv file) can be fed directly into your favorite email marketing 
  ```console 
  python3 webmaster.py
  ```
-4) When prompted, enter your Moz API access ID and key and your Hunter.io API Key. Alternatively, you can have the script load your credentials automatically. To do so, paste the text below into a .csv file, save it as credentials.csv, and place it inside the data directory.
+4) When prompted, enter your Moz API access ID and key and your Hunter.io API Key. Alternatively, you can have the script load your credentials automatically. To do so, paste the text below into a .csv file, save it as credentials.csv, and place it inside the data directory. If a file called credentials.csv is already present inside the data directory, delete the old one and insert the new one that you created. 
 ```console
 MOZ_ACCESS_ID,<your Moz access ID>
 MOZ_SECRET_KEY,<your Moz secret key>
 HUNTER_API_KEY,<your Moz access ID>
 ```
-As the script runs, 3 CSV files will appear in the data directory and will be updated as information is collected. Each row in the table represents a contact and each contact includes a first name, last name, email address and its confidence score (as determined by the Hunter.io API), organization, domain, and domain authority. 
+As the script runs, the 3 CSV below will be updated as information is collected. Each row in a table represents a contact and each contact includes a first name, last name, email address and its confidence score (as determined by the Hunter.io API), organization, domain, and domain authority. Note that if information for any of these fields is not found, the corresponding cell will be empty.
 
 * personal_contact.csv - Email address that are flagged as "personal" and have an associated first name and last name. This is what you want to use for your outreach. 
 * personal_contact_extra.csv - Email address that are flagged as "personal" but don't have an accociated first name and last name. You can use this list as well, but I find that starting an email with "Dear first_name last_name," greatly increases response rate. 
@@ -44,5 +44,4 @@ By default, sites with a domain authority score greater than 70 are ignored as s
 ### Common HTTP response errors
 
 * HTTP Error 429 - Too many calls to API. Either upgrade free trial account or make a new one.
-* HTTP error 401 - Incorrect api credentials. Check that you have entered them in correctly and try again. 
-
+* HTTP error 401 - Incorrect api credentials. Check that you have entered them in correctly and try again.
